@@ -2,7 +2,7 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2023/08/28
+ * Date               : 2023/12/22
  * Description        : Main program body.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -66,7 +66,7 @@ void TIM1_Init( u16 arr, u16 psc )
     TIM_ClearITPendingBit( TIM1, TIM_IT_Update );
     NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
     TIM_ITConfig( TIM1, TIM_IT_Update, ENABLE );
@@ -82,7 +82,7 @@ void TIM1_Init( u16 arr, u16 psc )
  */
 int main(void)
 {
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init(921600);

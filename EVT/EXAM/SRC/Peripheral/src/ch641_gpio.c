@@ -2,7 +2,7 @@
 * File Name          : ch641_gpio.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2023/12/22
 * Description        : This file provides all the GPIO firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -433,8 +433,20 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource)
  */
 void GPIO_IPD_Unused(void)
 {
-   GPIO_InitTypeDef GPIO_InitStructure = {0};
+    GPIO_InitTypeDef GPIO_InitStructure = {0};
     uint32_t chip = 0;
+    uint8_t tmp = 0;
+
+    tmp = *( uint8_t * )CFG0_PD_C;
+
+    if(tmp != 0xFF)
+    {
+        if(tmp & 0x01)
+        {
+            EXTEN->CTLR2 |= EXTEN_IREF_INC;
+        }
+    }
+
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
     chip =  *( uint32_t * )0x1FFFF7C4 & (~0x000000F0);
     switch(chip)

@@ -2,7 +2,7 @@
 * File Name          : system_ch641.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2023/12/22
 * Description        : CH641 Device Peripheral Access Layer System Source File.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -61,7 +61,9 @@ void SystemInit (void)
   RCC->CFGR0 &= (uint32_t)0xF8FE0000;
   RCC->CTLR &= (uint32_t)0xFEFFFFFF;
   RCC->INTR = 0x00140000;
-
+  
+  RCC_AdjustHSICalibrationValue(0x10);
+  
   SetSysClock();
 }
 
@@ -178,6 +180,15 @@ static void SetSysClockTo_24MHZ_HSI(void)
  */
 static void SetSysClockTo_48MHZ_HSI(void)
 {
+    uint8_t tmp = 0;
+
+    tmp = *( uint8_t * )CFG0_PLL_TRIM;
+
+    if(tmp != 0xFF)
+    {
+        RCC_AdjustHSICalibrationValue((tmp & 0x1F));
+    }
+
     /* Flash 0 wait state */
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
     FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_1;

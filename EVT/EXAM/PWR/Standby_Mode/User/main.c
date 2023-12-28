@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2023/08/28
+ * Version            : V1.0.1
+ * Date               : 2023/11/03
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -30,6 +30,13 @@ u32 FLAG1 =0;
 #define  LSIPSC 60000
 #define  NUM1 3
 #define  SYSCLK1  48000000  //TIM1 Clock
+
+#define  CAL_FREQ_CLOSE   0
+#define  CAL_FREQ_OPEN    1
+
+#ifndef  LSI_FREQ
+#define  LSI_FREQ   CAL_FREQ_OPEN
+#endif
 /* Global Variable */
 
 /*********************************************************************
@@ -52,8 +59,8 @@ void EXTI_INT_INIT(void)
     EXTI_Init(&EXTI_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = AWU_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 }
@@ -96,14 +103,20 @@ void TIM_Init(u16 arr, u16 psc)
 u32 CAL_AWU_TIME(void)
 {
     u32 i=0;
+#if    (LSI_FREQ==CAL_FREQ_OPEN)
     PWR_AWU_SetWindowValue(1-1);    // LSI time base,60K frequency division
     TIM_Init(0xFFFF,PSC1);
     num=TIM1->CNT;
     PWR_AutoWakeUpCmd(ENABLE);
     Delay_Ms(600);
     num=num/(NUM1-1);
-    i= (480*LSIPSC)/(48*num)*1000;//48=(PSC1+1)/100;480=SYSCLK1/100000
-    return LSIPSC*1000/i;
+    i= (480*LSIPSC)/(48*num);//48=(PSC1+1)/100;480=SYSCLK1/100000
+
+#elif  (LSI_FREQ==CAL_FREQ_CLOSE)
+    i = RCC_GetLSIFreq();
+
+#endif
+    return ((LSIPSC*10)/i+5)/10;
 }
 /*********************************************************************
  * @fn      main
@@ -116,7 +129,7 @@ int main(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure = {0};
     u32 TIM_MS=0;
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     SystemCoreClockUpdate();
     Delay_Init();
     EXTI_INT_INIT();

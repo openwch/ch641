@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : ch641_rcc.c
 * Author             : WCH
-* Version            : V1.0.0
-* Date               : 2023/08/28
+* Version            : V1.0.1
+* Date               : 2023/12/22
 * Description        : This file provides all the RCC firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -59,6 +59,8 @@ void RCC_DeInit(void)
     RCC->CFGR0 &= (uint32_t)0xF8FE0000;
     RCC->CTLR &= (uint32_t)0xFEFFFFFF;
     RCC->INTR = 0x00140000;
+
+    RCC_AdjustHSICalibrationValue(0x10);
 }
 
 /*********************************************************************
@@ -138,6 +140,21 @@ void RCC_PLLCmd(FunctionalState NewState)
 void RCC_SYSCLKConfig(uint32_t RCC_SYSCLKSource)
 {
     uint32_t tmpreg = 0;
+    uint8_t tmp = 0;
+
+    tmp = *( uint8_t * )CFG0_PLL_TRIM;
+
+    if(tmp != 0xFF)
+    {
+        if(RCC_SYSCLKSource == RCC_SYSCLKSource_PLLCLK)
+        {
+            RCC_AdjustHSICalibrationValue((tmp & 0x1F));
+        }
+        else
+        {
+            RCC_AdjustHSICalibrationValue(0x10);
+        }
+    }
 
     tmpreg = RCC->CFGR0;
     tmpreg &= CFGR0_SW_Mask;
@@ -581,5 +598,16 @@ void RCC_ClearITPendingBit(uint8_t RCC_IT)
     *(__IO uint8_t *)INTR_BYTE3_ADDRESS = RCC_IT;
 }
 
-
+/*********************************************************************
+ * @fn      RCC_GetLSIFreq
+ *
+ * @brief   Get the LSI clock frequency
+ *
+ * @return  LSI clock frequency (KHz)
+ *
+ */
+uint32_t RCC_GetLSIFreq(void)
+{
+    return( *( uint32_t * )0x1FFFF7D8 );
+}
 

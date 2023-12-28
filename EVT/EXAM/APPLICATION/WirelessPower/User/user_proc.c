@@ -255,12 +255,20 @@ void App_Cfg_Init( void )
 
     usercfg.bit_low_power = 0;                  // Low-power standby mode is turned off by default, which can be mainly used for charging treasure and other scenarios.
     usercfg.bit_fod_notry = 0;
-    usercfg.bit_vhv12_prefer = 1;               // 9V requested by default
+    usercfg.bit_vhv12_prefer = 1;               // 12V requested by default
 
     usercfg.bit_epp20_en = 0;                   //0:epp default 15W protocol 1: enable epp 20W (currently some test stands support this mode).
 
-    usercfg.pwm_dead_time = 7;                  // The default value is 11, i.e. 230ns, which is large for MOS compatibility, e.g. small gate capacitance, which can be scaled down.
-    usercfg.pwm_dt_forword = 4;                 //This value is set smaller than pwm_dead_time. The library does not set a limit on it, but do not set it arbitrarily.
+    if((DBGMCU_GetDEVID() & 0xF0) == 0x10 )     //version B, the P-tube drive capability is doubled
+    {
+        usercfg.pwm_dead_time = 4;                  // The default value is 11, i.e. 230ns, which is large for MOS compatibility, e.g. small gate capacitance, which can be scaled down.
+        usercfg.pwm_dt_forword = 3;                 //This value is set smaller than pwm_dead_time. The library does not set a limit on it, but do not set it arbitrarily.
+    }
+    else
+    {
+        usercfg.pwm_dead_time = 5;
+        usercfg.pwm_dt_forword = 3;
+    }
 #if DE_PRINTF
     USART_Printf_Init(115200);
 #endif
