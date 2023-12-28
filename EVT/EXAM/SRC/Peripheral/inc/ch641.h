@@ -2,7 +2,7 @@
 * File Name          : ch641.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2023/12/22
 * Description        : ch641 Device Peripheral Access Layer Header File.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -23,7 +23,7 @@ extern "C" {
 
 /* CH641 Standard Peripheral Library version number */
 #define __CH641_STDPERIPH_VERSION_MAIN   (0x01) /* [15:8] main version */
-#define __CH641_STDPERIPH_VERSION_SUB    (0x00) /* [7:0] sub version */
+#define __CH641_STDPERIPH_VERSION_SUB    (0x01) /* [7:0] sub version */
 #define __CH641_STDPERIPH_VERSION        ( (__CH641_STDPERIPH_VERSION_MAIN << 8)\
                                              |(__CH641_STDPERIPH_VERSION_SUB << 0))
 
@@ -403,6 +403,10 @@ typedef struct
 #define USBPD_BASE                              (AHBPERIPH_BASE + 0x4000)
 
 #define OB_BASE                                 ((uint32_t)0x1FFFF800)    /* Flash Option Bytes base address */
+
+#define VENDOR_CFG0_BASE                        ((uint32_t)0x1FFFF7D4)
+#define CFG0_PLL_TRIM                           (VENDOR_CFG0_BASE)
+#define CFG0_PD_C                               (VENDOR_CFG0_BASE + 0x02)
 
 
 /* Peripheral declaration */

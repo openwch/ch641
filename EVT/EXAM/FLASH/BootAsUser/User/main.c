@@ -2,7 +2,7 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2023/08/28
+ * Date               : 2023/12/22
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -13,7 +13,7 @@
 /*
  *@Note
  *BOOT FLASH area 1920Byte is used for User Flash usage tutorial:
- *The User FLASH extension for this routine is 16Byte+1920Byte.
+ *The User FLASH extension for this routine is 16KByte+1920Byte.
  *There are a few points to note when using this routine:
  *1.If you want to put the function in BOOT FLASH,you need to add the prefix
  *__attribute__((section(".Bcode"))).
@@ -64,7 +64,7 @@ int main(void)
 {
     vu8 t=0, i;
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     Delay_Init();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n",SystemCoreClock);

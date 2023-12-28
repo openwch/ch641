@@ -25,10 +25,13 @@ static uint16_t ISEN_Bias;                                 /* Current calibratio
  */
 void ADC_User_Init( void )
 {
+    RCC->CFGR0 &= ~0x0001F800;
+    RCC->CFGR0 |= (0x35<<11);                   //adc clock 500K
+
     GPIOA->CFGLR &= ~0xF0000000;
 
     EXTEN->CTLR2 &= ~(0x17<<8);
-    EXTEN->CTLR2 |= (0x01<<8);            //ISP differential inputs, internal bias off
+    EXTEN->CTLR2 |= (0x01<<8);                  //ISP differential inputs, internal bias off
 
     RCC->APB2PRSTR |= (1<<9);                   //ADC module reset
     RCC->APB2PRSTR &= ~(1<<9);                  //ADC Module Recovery
@@ -39,7 +42,7 @@ void ADC_User_Init( void )
     while( ADC1->CTLR2 & CTLR2_RSTCAL_Set );
     ADC1->CTLR2 |= CTLR2_CAL_Set;
     while( ADC1->CTLR2 & CTLR2_CAL_Set );
-    ADC1->SAMPTR2 = 0x01;                       //Sampling time 9 TICK
+    ADC1->SAMPTR2 = 0x02;                       //Sampling time 37 TICK
 }
 
 /*********************************************************************

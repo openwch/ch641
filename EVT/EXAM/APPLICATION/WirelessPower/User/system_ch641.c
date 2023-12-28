@@ -1,175 +1,51 @@
-/********************************** (C) COPYRIGHT  *******************************
- * File Name          : system_ch641.c
- * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2022/08/08
- * Description        : This file contains all the functions prototypes for UART
- *                      Printf , Delay functions.
- *********************************************************************************
- * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
- * Attention: This software (modified or not) and binary are used for 
- * microcontroller manufactured by Nanjing Qinheng Microelectronics.
- *******************************************************************************/
-#include <system_ch641.h>
+/********************************** (C) COPYRIGHT *******************************
+* File Name          : system_ch641.c
+* Author             : WCH
+* Version            : V1.0.0
+* Date               : 2023/12/22
+* Description        : CH641 Device Peripheral Access Layer System Source File.
+*********************************************************************************
+* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+* Attention: This software (modified or not) and binary are used for 
+* microcontroller manufactured by Nanjing Qinheng Microelectronics.
+*******************************************************************************/
+#include <ch641.h>
 
-TMR_PARAM timer;
-uint8_t volatile tmr_ms_cnt;
-uint16_t volatile decode_tick;
+/* 
+* Uncomment the line corresponding to the desired System clock (SYSCLK) frequency (after 
+* reset the HSI is used as SYSCLK source).
+* If none of the define below is enabled, the HSI is used as System clock source. 
+*/
 
+//#define SYSCLK_FREQ_8MHz_HSI    8000000
+//#define SYSCLK_FREQ_24MHZ_HSI   HSI_VALUE
+#define SYSCLK_FREQ_48MHZ_HSI   48000000
 
-/*********************************************************************
- * @fn      Delay_Us
- *
- * @brief   Microsecond Delay Time.
- *
- * @param   n - Microsecond number.
- *
- * @return  None
- */
-void mDelayuS(uint16_t n)
-{
-    uint16_t i,k1,k2,dk;
-
-    k1 = (uint16_t)SysTick->CNT;
-    i = (n-1) * 6;
-    while(1)
-    {
-        k2 = (uint16_t)SysTick->CNT;
-        if(k2 >= k1)
-        {
-            dk = k2-k1;
-        }
-        else {
-            dk = k2+6000-k1;
-        }
-        if(i > dk)
-        {
-            i = i-dk;
-        }
-        else {
-            break;
-        }
-        k1 = k2;
-    }
-}
-
-/*********************************************************************
- * @fn      Delay_Ms
- *
- * @brief   Millisecond Delay Time.
- *
- * @param   n - Millisecond number.
- *
- * @return  None
- */
-void mDelaymS(uint16_t n)
-{
-    while ( n )
-    {
-        mDelayuS( 1000 );
-        -- n;
-    }
-}
-
-extern void QI_Recv_Tick_Proc( void );
-
-void SysTick_Handler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
-/*********************************************************************
- * @fn      SysTick_Handler
- *
- * @brief   Interrupt callback function.
- *
- * @return  None
- */
-void SysTick_Handler( void )
-{
-    SysTick->SR = 0;
-    decode_tick += 6000;
-    tmr_ms_cnt++;
-    QI_Recv_Tick_Proc();                    //Qi decoding timeout handling
-    Tmr_ISR_Callback();                     //interrupt callback function
-}
-
-/*********************************************************************
- * @fn      Timer_Init
- *
- * @brief   Timer initialization.
- *
- * @return  None
- */
-void Timer_Init( void )
-{
-    SysTick->CNT = 0;
-    SysTick->CMP = 6000-1;
-    SysTick->SR = 0;
-    SysTick->CTLR = (1<<3) | (1<<1) | (1<<0);         //Auto-reload; HCLK/8; turn on interrupt; start counter
-    NVIC_SetPriority(SysTicK_IRQn, 0x80 | 0x60);      //Only bit7 bit6 is valid, lowest priority. Non-preemptive and same priority as QII decoding.
-    NVIC_EnableIRQ(SysTicK_IRQn);
-}
-
-#if DE_PRINTF
-/*********************************************************************
- * @fn      USART_Printf_Init
- *
- * @brief   Initializes the USARTx peripheral.
- *
- * @param   baudrate - USART communication baud rate.
- *
- * @return  None
- */
-void USART_Printf_Init(uint32_t baudrate)
-{
-    GPIOB->CFGLR |= 0xF0;           //PB1
-    AFIO->PCFR1 &= ~(7<<2);
-    AFIO->PCFR1 |= (1<<2);
-
-    USART1->BRR = 417;             //BRR = DIV_M+(DIV_F/16) = 48000000/16/115200=26.041666,The result of the calculation is then multiplied by 16 and fed into the registers
-    USART1->CTLR1 = 0x2008;        //UE=1£¬uart enable    TE=1£¬transmit enable
-}
+/* Clock Definitions */
+#ifdef SYSCLK_FREQ_8MHz_HSI
+  uint32_t SystemCoreClock         = SYSCLK_FREQ_8MHz_HSI;          /* System Clock Frequency (Core Clock) */
+#elif defined SYSCLK_FREQ_24MHZ_HSI
+  uint32_t SystemCoreClock         = SYSCLK_FREQ_24MHZ_HSI;        /* System Clock Frequency (Core Clock) */
+#elif defined SYSCLK_FREQ_48MHZ_HSI
+  uint32_t SystemCoreClock         = SYSCLK_FREQ_48MHZ_HSI;        /* System Clock Frequency (Core Clock) */
+#else
+  uint32_t SystemCoreClock         = HSI_VALUE;
 #endif
 
+__I uint8_t AHBPrescTable[16] = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
 
-#if (DE_PRINTF == 1)
-void uart_send_dat(uint8_t udat)
-{
-    while((USART1->STATR & USART_FLAG_TXE) == 0 );
-    USART1->DATAR = udat;
-}
 
-void uart_send_buf(uint8_t *ubuf,uint8_t ulen)
-{
-    uint8_t i;
-    for(i = 0;i!=ulen;i++)
-    {
-        uart_send_dat(ubuf[i]);
-    }
-}
+/* system_private_function_proto_types */
+static void SetSysClock(void);
 
+#ifdef SYSCLK_FREQ_8MHz_HSI
+  static void SetSysClockTo_8MHz_HSI(void);
+#elif defined SYSCLK_FREQ_24MHZ_HSI
+  static void SetSysClockTo_24MHZ_HSI(void);
+#elif defined SYSCLK_FREQ_48MHZ_HSI
+  static void SetSysClockTo_48MHZ_HSI(void);
 #endif
-#if (DE_PRINTF == 2)
-/*********************************************************************
- * @fn      _write
- *
- * @brief   Support Printf Function
- *
- * @param   *buf - UART send Data.
- *          size - Data length.
- *
- * @return  size - Data length
- */
-__attribute__((used)) 
-int _write(int fd, char *buf, int size)
-{
-    int i;
 
-    for(i = 0; i < size; i++){
-        while((USART1->STATR & USART_FLAG_TXE) == 0);
-        USART1->DATAR = *buf++;
-    }
-
-    return size;
-}
-#endif
 
 /*********************************************************************
  * @fn      SystemInit
@@ -179,16 +55,148 @@ int _write(int fd, char *buf, int size)
  *
  * @return  none
  */
-void SystemInit(void)
+void SystemInit (void)
 {
-    RCC->CTLR |= (uint32_t)0x00000001;
-    RCC->CFGR0 = (0x38<<11);           //ADC 48 crossover 1M
-    RCC->INTR = 0x00140000;
+  RCC->CTLR |= (uint32_t)0x00000001;
+  RCC->CFGR0 &= (uint32_t)0xF8FE0000;
+  RCC->CTLR &= (uint32_t)0xFEFFFFFF;
+  RCC->INTR = 0x00140000;
+  
+  RCC_AdjustHSICalibrationValue(0x10);
+  
+  SetSysClock();
+}
+
+/*********************************************************************
+ * @fn      SystemCoreClockUpdate
+ *
+ * @brief   Update SystemCoreClock variable according to Clock Register Values.
+ *
+ * @return  none
+ */
+void SystemCoreClockUpdate (void)
+{
+    uint32_t tmp = 0;
+
+    tmp = RCC->CFGR0 & RCC_SWS;
+
+    switch (tmp)
+    {
+        case 0x00:
+            SystemCoreClock = HSI_VALUE;
+            break;
+        case 0x08:
+            SystemCoreClock = HSI_VALUE * 2;
+            break;
+        default:
+            SystemCoreClock = HSI_VALUE;
+            break;
+    }
+
+    tmp = AHBPrescTable[((RCC->CFGR0 & RCC_HPRE) >> 4)];
+
+    if(((RCC->CFGR0 & RCC_HPRE) >> 4) < 8)
+    {
+        SystemCoreClock /= tmp;
+    }
+    else
+    {
+        SystemCoreClock >>= tmp;
+    }
+}
+
+/*********************************************************************
+ * @fn      SetSysClock
+ *
+ * @brief   Configures the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers.
+ *
+ * @return  none
+ */
+static void SetSysClock(void)
+{
+    GPIO_IPD_Unused();
+
+#ifdef SYSCLK_FREQ_8MHz_HSI
+    SetSysClockTo_8MHz_HSI();
+#elif defined SYSCLK_FREQ_24MHZ_HSI
+    SetSysClockTo_24MHZ_HSI();
+#elif defined SYSCLK_FREQ_48MHZ_HSI
+    SetSysClockTo_48MHZ_HSI();
+#endif
+ 
+ /* If none of the define above is enabled, the HSI is used as System clock.
+  * source (default after reset) 
+	*/ 
+}
+
+
+#ifdef SYSCLK_FREQ_8MHz_HSI
+
+/*********************************************************************
+ * @fn      SetSysClockTo_8MHz_HSI
+ *
+ * @brief   Sets HSI as System clock source and configure HCLK, PCLK2 and PCLK1 prescalers.
+ *
+ * @return  none
+ */
+static void SetSysClockTo_8MHz_HSI(void)
+{
+    /* Flash 0 wait state */
+    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
+
+    /* HCLK = SYSCLK = APB1 */
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV3;
+}
+
+#elif defined SYSCLK_FREQ_24MHZ_HSI
+
+/*********************************************************************
+ * @fn      SetSysClockTo_24MHZ_HSI
+ *
+ * @brief   Sets System clock frequency to 24MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ *
+ * @return  none
+ */
+static void SetSysClockTo_24MHZ_HSI(void)
+{
+    /* Flash 0 wait state */
+    FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
+    FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_0;
+
+    /* HCLK = SYSCLK = APB1 */
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
+}
+
+
+#elif defined SYSCLK_FREQ_48MHZ_HSI
+
+/*********************************************************************
+ * @fn      SetSysClockTo_48MHZ_HSI
+ *
+ * @brief   Sets System clock frequency to 48MHz and configure HCLK, PCLK2 and PCLK1 prescalers.
+ *
+ * @return  none
+ */
+static void SetSysClockTo_48MHZ_HSI(void)
+{
+    uint8_t tmp = 0;
+
+    tmp = *( uint8_t * )CFG0_PLL_TRIM;
+
+    if(tmp != 0xFF)
+    {
+        RCC_AdjustHSICalibrationValue((tmp & 0x1F));
+    }
 
     /* Flash 0 wait state */
     FLASH->ACTLR &= (uint32_t)((uint32_t)~FLASH_ACTLR_LATENCY);
     FLASH->ACTLR |= (uint32_t)FLASH_ACTLR_LATENCY_1;
 
+    /* HCLK = SYSCLK = APB1 */
+    RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
+
+    /* PLL configuration: PLLCLK = HSI * 2 = 48 MHz */
     /* Enable PLL */
     RCC->CTLR |= RCC_PLLON;
     /* Wait till PLL is ready */
@@ -197,67 +205,15 @@ void SystemInit(void)
     }
     /* Select PLL as system clock source */
     RCC->CFGR0 &= (uint32_t)((uint32_t)~(RCC_SW));
-    RCC->CFGR0 |= (uint32_t)RCC_SW_PLL;
+    RCC->CFGR0 |= (uint32_t)RCC_SW_PLL;    
     /* Wait till PLL is used as system clock source */
     while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x08)
     {
     }
-
-    //Trimmed HSI, 24MHZ
-//    RCC->CTLR = (RCC->CTLR & 0xFFFFFF07) | (13<<3); //Default value 16, take the value 0~31, one frame 60KZ, plus or minus 4% adjustment.
-    //Corresponding to 127K, that's one frame change 60K*2/376 = 320hz
 }
 
-/*********************************************************************
- * @fn      Enable_Globle_IRQ (re-write function in core_riscv.h)
- *
- * @brief   Enable Global Interrupt
- *
- * @return  none
- */
-void Enable_Globle_IRQ()
-{
-  uint32_t result;
-
-  __asm volatile("csrr %0," "mstatus": "=r"(result));
-  result |= 0x88;
-  __asm volatile ("csrw mstatus, %0" : : "r" (result) );
-}
-
-/*********************************************************************
- * @fn      Disable_Globle_IRQ (re-write function in core_riscv.h)
- *
- * @brief   Disable Global Interrupt
- *
- * @return  none
- */
-void Disable_Globle_IRQ()
-{
-  uint32_t result;
-
-  __asm volatile("csrr %0," "mstatus": "=r"(result));
-  result &= ~0x88;
-  __asm volatile ("csrw mstatus, %0" : : "r" (result) );
-}
-
-/*********************************************************************
- * @fn      _sbrk
- *
- * @brief   Change the spatial position of data segment.
- *
- * @return  size: Data length
- */
-void *_sbrk(ptrdiff_t incr)
-{
-    extern char _end[];
-    extern char _heap_end[];
-    static char *curbrk = _end;
-
-    if ((curbrk + incr < _end) || (curbrk + incr > _heap_end))
-    return NULL - 1;
-
-    curbrk += incr;
-    return curbrk -incr;
-}
+#endif
 
 
+
+    

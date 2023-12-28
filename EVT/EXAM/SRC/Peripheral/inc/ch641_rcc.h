@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
 * File Name          : ch641_rcc.h
 * Author             : WCH
-* Version            : V1.0.0
-* Date               : 2023/08/28
+* Version            : V1.0.1
+* Date               : 2023/11/03
 * Description        : This file provides all the RCC firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -123,7 +123,7 @@ FlagStatus  RCC_GetFlagStatus(uint8_t RCC_FLAG);
 void        RCC_ClearFlag(void);
 ITStatus    RCC_GetITStatus(uint8_t RCC_IT);
 void        RCC_ClearITPendingBit(uint8_t RCC_IT);
-
+uint32_t    RCC_GetLSIFreq(void);
 #ifdef __cplusplus
 }
 #endif

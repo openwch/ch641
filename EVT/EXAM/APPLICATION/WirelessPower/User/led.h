@@ -13,7 +13,7 @@
 #ifndef USER_LED_H_
 #define USER_LED_H_
 
-#include <system_ch641.h>
+#include <ch641_debug.h>
 #include "user_proc.h"
 
 //LED Pin Definition

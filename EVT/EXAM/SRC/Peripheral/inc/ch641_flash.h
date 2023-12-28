@@ -2,7 +2,7 @@
 * File Name          : ch641_flash.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2023/12/26
 * Description        : This file contains all the functions prototypes for the FLASH
 *                      firmware library.
 *********************************************************************************
@@ -56,10 +56,6 @@ typedef enum
 
 #define FLASH_WRProt_AllPages            ((uint32_t)0x0000FFFF) /* Write protection of all Pages */
 
-/* Option_Bytes_nRST_STOP */
-#define OB_STOP_NoRST                    ((uint16_t)0x0002) /* No reset generated when entering in STOP */
-#define OB_STOP_RST                      ((uint16_t)0x0000) /* Reset generated when entering in STOP */
-
 /* Option_Bytes_nRST_STDBY */
 #define OB_STDBY_NoRST                   ((uint16_t)0x0004) /* No reset generated when entering in STANDBY */
 #define OB_STDBY_RST                     ((uint16_t)0x0000) /* Reset generated when entering in STANDBY */
@@ -107,7 +103,7 @@ FLASH_Status FLASH_ProgramHalfWord(uint32_t Address, uint16_t Data);
 FLASH_Status FLASH_ProgramOptionByteData(uint32_t Address, uint8_t Data);
 FLASH_Status FLASH_EnableWriteProtection(uint32_t FLASH_Pages);
 FLASH_Status FLASH_ReadOutProtection(FunctionalState NewState);
-FLASH_Status FLASH_UserOptionByteConfig(uint16_t OB_STOP, uint16_t OB_STDBY, uint16_t OB_RST, uint16_t OB_PowerON_Start_Mode);
+FLASH_Status FLASH_UserOptionByteConfig(uint16_t OB_STDBY, uint16_t OB_RST, uint16_t OB_PowerON_Start_Mode);
 uint32_t     FLASH_GetUserOptionByte(void);
 uint32_t     FLASH_GetWriteProtectionOptionByte(void);
 FlagStatus   FLASH_GetReadOutProtectionStatus(void);

@@ -15,3 +15,4 @@ Description=ROM(byte): 16K, SRAM(byte): 2K, CHIP PINS: 16, GPIO PORTS: 13.\nWCH 
 PeripheralVersion=1.0
 MCU=CH641P
 
+CLKSpeed=1

@@ -13,7 +13,7 @@
 #ifndef USER_ADC_H_
 #define USER_ADC_H_
 
-#include <system_ch641.h>
+#include <ch641_debug.h>
 
 /* ADC_channels */
 #define ADC_Channel_NTC                                 ((uint8_t)ADC_Channel_0)

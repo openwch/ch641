@@ -13,7 +13,7 @@
 #ifndef USER_USER_PROC_H_
 #define USER_USER_PROC_H_
 
-#include <system_ch641.h>
+#include <ch641_debug.h>
 
 
 /* Q value of the detected object */
