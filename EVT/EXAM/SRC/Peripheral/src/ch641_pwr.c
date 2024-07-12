@@ -2,7 +2,7 @@
 * File Name          : ch641_pwr.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2024/06/14
 * Description        : This file provides all the PWR firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -58,14 +58,14 @@ void PWR_PVDCmd(FunctionalState NewState)
  *        Detector(PVD).
  *
  * @param   PWR_PVDLevel - specifies the PVD detection level
- *            PWR_PVDLevel_0 - PVD detection level set to 3.2V
- *            PWR_PVDLevel_1 - PVD detection level set to 3.4V
- *            PWR_PVDLevel_2 - PVD detection level set to 3.6V
- *            PWR_PVDLevel_3 - PVD detection level set to 3.8V
- *            PWR_PVDLevel_4 - PVD detection level set to 4.0V
- *            PWR_PVDLevel_5 - PVD detection level set to 4.3V
- *            PWR_PVDLevel_6 - PVD detection level set to 4.5V
- *            PWR_PVDLevel_7 - PVD detection level set to 4.6V
+ *            PWR_PVDLevel_0 - PVD detection level set to mode 0 
+ *            PWR_PVDLevel_1 - PVD detection level set to mode 1
+ *            PWR_PVDLevel_2 - PVD detection level set to mode 2
+ *            PWR_PVDLevel_3 - PVD detection level set to mode 3
+ *            PWR_PVDLevel_4 - PVD detection level set to mode 4
+ *            PWR_PVDLevel_5 - PVD detection level set to mode 5
+ *            PWR_PVDLevel_6 - PVD detection level set to mode 6
+ *            PWR_PVDLevel_7 - PVD detection level set to mode 7
  *
  * @return  none
  */

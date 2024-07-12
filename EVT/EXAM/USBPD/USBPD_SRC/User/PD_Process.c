@@ -2,7 +2,7 @@
 * File Name          : PD_process.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2024/06/24
 * Description        : This file provides all the PD firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -209,7 +209,7 @@ void PD_Init( void )
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    EXTEN->CTLR2 |= USBPD_HVT;
+//    EXTEN->CTLR2 |= USBPD_HVT;
 
     USBPD->CONFIG = PD_DMA_EN;
     USBPD->STATUS = BUF_ERR | IF_RX_BIT | IF_RX_BYTE | IF_RX_ACT | IF_RX_RESET | IF_TX_END;
@@ -527,11 +527,13 @@ void PD_Det_Proc( void )
                     USBPD->CONFIG&=~CC_SEL_Mask;
                     USBPD->CONFIG |= CC_SEL_2;
                 }
-                else
+                else if(status == 3)
                 {
-                    USBPD->CONFIG |= CC_SEL_2;
+                    USBPD->CONFIG &=~CC_SEL_Mask;
                     USBPD->CONFIG |= CC_SEL_3;
+                    printf("USBPD->CONFIG=%x\r\n",USBPD->CONFIG);
                 }
+
                 if( (USBPD->PORT_CC1 & CC_PD) || (USBPD->PORT_CC2 & CC_PD)||(USBPD->PORT_CC3 & CC_PD)  )
                 {
                     PD_Ctl.PD_State = STA_SRC_CONNECT;
@@ -558,20 +560,22 @@ void PD_Det_Proc( void )
  */
 void PD_Phy_SendPack( UINT8 mode, UINT8 *pbuf, UINT8 len, UINT8 sop )
 {
-    if ((USBPD->CONFIG & CC_SEL_1) == CC_SEL_1 )
-    {
-        USBPD->PORT_CC1 |= CC_LVE;
-    }
+
 #if(CC_2==CC2)
-    else if( (USBPD->CONFIG & CC_SEL_2) == CC_SEL_2 )
+     if( (USBPD->CONFIG & CC_ALL_SEL) == CC_SEL_2 )
     {
         USBPD->PORT_CC2 |= CC_LVE;
     }
 #elif(CC_2==CC3)
-    else
+    if( (USBPD->CONFIG & CC_ALL_SEL) == CC_SEL_3 )
     {
         USBPD->PORT_CC3 |= CC_LVE;
     }
+    else
+    {
+        USBPD->PORT_CC1 |= CC_LVE;
+    }
+
 #endif
     USBPD->BMC_CLK_CNT = UPD_TMR_TX_48M;
 
@@ -590,21 +594,22 @@ void PD_Phy_SendPack( UINT8 mode, UINT8 *pbuf, UINT8 len, UINT8 sop )
         /* Wait for the send to complete, this will definitely complete, no need to do a timeout */
         while( (USBPD->STATUS & IF_TX_END) == 0 );
         USBPD->STATUS |= IF_TX_END;
-        if((USBPD->CONFIG & CC_SEL_1) == CC_SEL_1 )
-        {
-            USBPD->PORT_CC1 &= ~CC_LVE;
-        }
 #if(CC_2==CC2)
-        else if( (USBPD->CONFIG & CC_SEL_2) == CC_SEL_2 )
+         if( (USBPD->CONFIG & CC_ALL_SEL) == CC_SEL_2 )
         {
             USBPD->PORT_CC2 &= ~CC_LVE;
         }
 #elif(CC_2==CC3)
-        else
+         if( (USBPD->CONFIG & CC_ALL_SEL) == CC_SEL_3 )
         {
             USBPD->PORT_CC3 &= ~CC_LVE;
         }
 #endif
+         else
+        {
+            USBPD->PORT_CC1 &= ~CC_LVE;
+        }
+
         /* Switch to receive ready to receive GoodCRC */
         USBPD->CONFIG |=  PD_ALL_CLR ;
         USBPD->CONFIG &= ~( PD_ALL_CLR );

@@ -2,7 +2,7 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.1
- * Date               : 2023/11/03
+ * Date               : 2024/06/05
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -23,8 +23,8 @@
 #include "debug.h"
 
 /* Global define */
-u32 num =0;
-u32 AWU_CNT =0;
+volatile u32 num =0;
+volatile u32 AWU_CNT =0;
 u32 FLAG1 =0;
 #define  PSC1  4800-1       //TIM1 PSC
 #define  LSIPSC 60000

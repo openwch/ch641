@@ -2,7 +2,7 @@
 * File Name          : ch641_usbpd.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/09/25
+* Date               : 2024/06/24
 * Description        : This file contains all the functions prototypes for the WWDG
 *                      firmware library.
 *********************************************************************************
@@ -114,6 +114,7 @@ typedef volatile unsigned long  *PUINT32V;
 /* USBPD->CONFIG */
 #define PD_FILT_ED          (1<<0)             /* PD pin input filter enable */
 #define PD_ALL_CLR          (1<<1)             /* Clear all interrupt flags */
+#define CC_ALL_SEL          (3<<2)             /* Select PD communication port ALL*/
 #define CC_SEL_Mask         (3<<2)             /* Clear PD communication port */
 #define CC_SEL_1            (0<<2)             /* Select PD communication port1 */
 #define CC_SEL_2            (1<<2)             /* Select PD communication port2 */

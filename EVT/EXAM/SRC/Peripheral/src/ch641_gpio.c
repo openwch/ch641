@@ -2,7 +2,7 @@
 * File Name          : ch641_gpio.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/12/22
+* Date               : 2024/07/08
 * Description        : This file provides all the GPIO firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -465,11 +465,11 @@ void GPIO_IPD_Unused(void)
             GPIO_Init(GPIOA, &GPIO_InitStructure);
             break;
         }
-        case 0x64150500:     //CH641U
+        case 0x64120500:     //CH641X
         {
-            GPIO_InitStructure.GPIO_Pin =GPIO_Pin_9|GPIO_Pin_10\
-                                        |GPIO_Pin_13|GPIO_Pin_14\
-                                        |GPIO_Pin_15;
+            GPIO_InitStructure.GPIO_Pin =GPIO_Pin_8|GPIO_Pin_9\
+                                        |GPIO_Pin_10|GPIO_Pin_13\
+                                        |GPIO_Pin_14|GPIO_Pin_15;
             GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
             GPIO_Init(GPIOA, &GPIO_InitStructure);
             break;

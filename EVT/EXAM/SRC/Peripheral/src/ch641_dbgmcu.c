@@ -2,7 +2,7 @@
 * File Name          : ch641_dbgmcu.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2024/03/20
 * Description        : This file provides all the DBGMCU firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -67,20 +67,22 @@ void __set_DEBUG_CR(uint32_t value)
     __asm volatile("csrw 0x7C0, %0" : : "r"(value));
 }
 
-/*********************************************************************
+ /*********************************************************************
  * @fn      DBGMCU_Config
  *
  * @brief   Configures the specified peripheral and low power mode behavior
  *        when the MCU under Debug mode.
  *
  * @param   DBGMCU_Periph - specifies the peripheral and low power mode.
+ *            DBGMCU_SLEEP -  Keep debugger connection during SLEEP mode
+ *            DBGMCU_STANDBY -  Keep debugger connection during STANDBY mode
  *            DBGMCU_WWDG_STOP - Debug WWDG stopped when Core is halted
  *            DBGMCU_TIM1_STOP - TIM1 counter stopped when Core is halted
  *            DBGMCU_TIM2_STOP - TIM2 counter stopped when Core is halted
  *          NewState - ENABLE or DISABLE.
  *
  * @return  none
- */
+ */ 
 void DBGMCU_Config(uint32_t DBGMCU_Periph, FunctionalState NewState)
 {
     uint32_t val;
@@ -106,7 +108,7 @@ void DBGMCU_Config(uint32_t DBGMCU_Periph, FunctionalState NewState)
  *          ChipID List-
  *    CH641F-0x641005x0
  *    CH641D-0x641105x0
- *    CH641U-0x641505x0
+ *    CH641X-0x641205x0
  *    CH641P-0x641605x0
  */
 uint32_t DBGMCU_GetCHIPID( void )

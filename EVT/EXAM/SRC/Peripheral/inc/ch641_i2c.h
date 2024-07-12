@@ -2,7 +2,7 @@
 * File Name          : ch641_i2c.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2024/07/08
 * Description        : This file contains all the functions prototypes for the
 *                      I2C firmware library.
 *********************************************************************************
@@ -77,13 +77,13 @@ typedef struct
 #define I2C_IT_BTF                                           ((uint32_t)0x02000004)
 #define I2C_IT_ADDR                                          ((uint32_t)0x02000002)
 
-/* SR2 register flags  */
+/* STAR2 register flags  */
 #define I2C_FLAG_DUALF                                       ((uint32_t)0x00800000)
 #define I2C_FLAG_GENCALL                                     ((uint32_t)0x00100000)
 #define I2C_FLAG_TRA                                         ((uint32_t)0x00040000)
 #define I2C_FLAG_BUSY                                        ((uint32_t)0x00020000)
 
-/* SR1 register flags */
+/* STAR1 register flags */
 #define I2C_FLAG_PECERR                                      ((uint32_t)0x10001000)
 #define I2C_FLAG_OVR                                         ((uint32_t)0x10000800)
 #define I2C_FLAG_AF                                          ((uint32_t)0x10000400)
