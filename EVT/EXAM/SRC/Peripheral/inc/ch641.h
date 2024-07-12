@@ -2,7 +2,7 @@
 * File Name          : ch641.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/12/22
+* Date               : 2024/07/08
 * Description        : ch641 Device Peripheral Access Layer Header File.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -23,7 +23,7 @@ extern "C" {
 
 /* CH641 Standard Peripheral Library version number */
 #define __CH641_STDPERIPH_VERSION_MAIN   (0x01) /* [15:8] main version */
-#define __CH641_STDPERIPH_VERSION_SUB    (0x01) /* [7:0] sub version */
+#define __CH641_STDPERIPH_VERSION_SUB    (0x02) /* [7:0] sub version */
 #define __CH641_STDPERIPH_VERSION        ( (__CH641_STDPERIPH_VERSION_MAIN << 8)\
                                              |(__CH641_STDPERIPH_VERSION_SUB << 0))
 
@@ -33,7 +33,7 @@ typedef enum IRQn
     /******  RISC-V Processor Exceptions Numbers *******************************************************/
     NonMaskableInt_IRQn = 2, /* 2 Non Maskable Interrupt                             */
     EXC_IRQn = 3,            /* 3 Exception Interrupt                                */
-    SysTicK_IRQn = 12,       /* 12 System timer Interrupt                            */
+    SysTick_IRQn = 12,       /* 12 System timer Interrupt                            */
     Software_IRQn = 14,      /* 14 software Interrupt                                */
 
     /******  RISC-V specific Interrupt Numbers *********************************************************/
@@ -65,6 +65,7 @@ typedef enum IRQn
 } IRQn_Type;
 
 #define HardFault_IRQn    EXC_IRQn
+#define SysTicK_IRQn      SysTick_IRQn
 
 #include <stdint.h>
 #include <core_riscv.h>
@@ -1713,6 +1714,15 @@ typedef struct
 #define PWR_CTLR_PLS_0                          ((uint16_t)0x0020) /* Bit 0 */
 #define PWR_CTLR_PLS_1                          ((uint16_t)0x0040) /* Bit 1 */
 #define PWR_CTLR_PLS_2                          ((uint16_t)0x0080) /* Bit 2 */
+
+#define PWR_CTLR_PLS_MODE0                      ((uint16_t)0x0000) /* PVD level 0 */
+#define PWR_CTLR_PLS_MODE1                      ((uint16_t)0x0020) /* PVD level 1 */
+#define PWR_CTLR_PLS_MODE2                      ((uint16_t)0x0040) /* PVD level 2 */
+#define PWR_CTLR_PLS_MODE3                      ((uint16_t)0x0060) /* PVD level 3 */
+#define PWR_CTLR_PLS_MODE4                      ((uint16_t)0x0080) /* PVD level 4 */
+#define PWR_CTLR_PLS_MODE5                      ((uint16_t)0x00A0) /* PVD level 5 */
+#define PWR_CTLR_PLS_MODE6                      ((uint16_t)0x00C0) /* PVD level 6 */
+#define PWR_CTLR_PLS_MODE7                      ((uint16_t)0x00E0) /* PVD level 7 */
 
 /*******************  Bit definition for PWR_CSR register  ********************/
 #define PWR_CSR_PVDO                            ((uint16_t)0x0004) /* PVD Output */

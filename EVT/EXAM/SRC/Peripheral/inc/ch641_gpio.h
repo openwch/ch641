@@ -2,7 +2,7 @@
 * File Name          : ch641_gpio.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2024/03/20
 * Description        : This file contains all the functions prototypes for the
 *                      GPIO firmware library.
 *********************************************************************************
@@ -24,6 +24,8 @@ typedef enum
 {
     GPIO_Speed_30MHz = 3,
 } GPIOSpeed_TypeDef;
+
+#define GPIO_Speed_50MHz               GPIO_Speed_30MHz
 
 /* Configuration Mode enumeration */
 typedef enum

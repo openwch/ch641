@@ -2,7 +2,7 @@
  * File Name          : ch641_debug.c
  * Author             : WCH
  * Version            : V1.0.1
- * Date               : 2023/12/25
+ * Date               : 2024/07/08
  * Description        : This file contains all the functions prototypes for UART
  *                      Printf , Delay functions.
  *********************************************************************************
@@ -103,8 +103,8 @@ void Timer_Init( void )
     SysTick->CMP = 6000-1;
     SysTick->SR = 0;
     SysTick->CTLR = (1<<3) | (1<<1) | (1<<0);         //Auto-reload; HCLK/8; turn on interrupt; start counter
-    NVIC_SetPriority(SysTicK_IRQn, 0x80 | 0x60);      //Only bit7 bit6 is valid, lowest priority. Non-preemptive and same priority as QII decoding.
-    NVIC_EnableIRQ(SysTicK_IRQn);
+    NVIC_SetPriority(SysTick_IRQn, 0x80 | 0x60);      //Only bit7 bit6 is valid, lowest priority. Non-preemptive and same priority as QII decoding.
+    NVIC_EnableIRQ(SysTick_IRQn);
 }
 
 #if DE_PRINTF
@@ -124,7 +124,7 @@ void USART_Printf_Init(uint32_t baudrate)
     AFIO->PCFR1 |= (1<<2);
 
     USART1->BRR = 417;             //BRR = DIV_M+(DIV_F/16) = 48000000/16/115200=26.041666,The result of the calculation is then multiplied by 16 and fed into the registers
-    USART1->CTLR1 = 0x2008;        //UE=1£¬uart enable    TE=1£¬transmit enable
+    USART1->CTLR1 = 0x2008;        //UE=uart enable    TE=transmit enable
 }
 #endif
 

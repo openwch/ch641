@@ -2,7 +2,7 @@
 * File Name          : ch641_dbgmcu.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2023/08/28
+* Date               : 2024/03/20
 * Description        : This file contains all the functions prototypes for the
 *                      DBGMCU firmware library.
 *********************************************************************************
@@ -20,9 +20,11 @@ extern "C" {
 #include <ch641.h>
 
 /* CFGR0 Register */
-#define DBGMCU_WWDG_STOP             ((uint32_t)0x00000002)
-#define DBGMCU_TIM1_STOP             ((uint32_t)0x00000010)
-#define DBGMCU_TIM2_STOP             ((uint32_t)0x00000020)
+#define DBGMCU_SLEEP                 ((uint32_t)0x00000001)
+#define DBGMCU_STANDBY               ((uint32_t)0x00000004)
+#define DBGMCU_WWDG_STOP             ((uint32_t)0x00000200)
+#define DBGMCU_TIM1_STOP             ((uint32_t)0x00001000)
+#define DBGMCU_TIM2_STOP             ((uint32_t)0x00002000)
 
 uint32_t DBGMCU_GetREVID(void);
 uint32_t DBGMCU_GetDEVID(void);
