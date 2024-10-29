@@ -2,7 +2,7 @@
 * File Name          : core_riscv.c
 * Author             : WCH
 * Version            : V1.0.1
-* Date               : 2023/11/11
+* Date               : 2024/10/25
 * Description        : RISC-V V2 Core Peripheral Access Layer Source File for CH641
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -273,4 +273,19 @@ uint32_t __get_SP(void)
 
     __ASM volatile("mv %0,""sp": "=r"(result):);
     return (result);
+}
+
+/*********************************************************************
+ * @fn      _WFE
+ *
+ * @brief   Wait for Events
+ *
+ * @return  none
+ */
+__attribute__( (section(".highcode")) ) void WFE(uint32_t t)
+{
+  asm volatile ("wfi");
+  asm volatile ("1:addi a0, a0, -1\n\t" \
+                "bnez a0, 1b\n\t"  \
+          );
 }

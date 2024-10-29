@@ -2,7 +2,7 @@
 * File Name          : PD_Process.h
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2024/06/05
+* Date               : 2024/07/22
 * Description        : This file contains all the functions prototypes for the
 *                      PD library.
 *********************************************************************************
@@ -17,6 +17,11 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
+
+#define LowpowerON 1
+#define LowpowerOff 0
+#define Lowpower LowpowerON
+
 
 #define CC2   0
 #define CC3   1

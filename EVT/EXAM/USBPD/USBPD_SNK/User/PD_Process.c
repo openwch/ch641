@@ -2,7 +2,7 @@
 * File Name          : PD_process.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2024/06/24
+* Date               : 2024/10/25
 * Description        : This file provides all the PD firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -240,9 +240,7 @@ UINT8 PD_Detect( void )
         {
             cmp_cc1 |= bCC_CMP_22;
         }
-        USBPD->PORT_CC1 &= ~( CC_CE|CC_CMPO|CC_CVS_Mask );
-        USBPD->PORT_CC1 |= CC_CE;
-        USBPD->PORT_CC1 |= CC_CVS_66;
+
 #if(CC_2==CC2)
         USBPD->PORT_CC2 &= ~( CC_CE|CC_CMPO|CC_CVS_Mask );
         USBPD->PORT_CC2 |= CC_CE;
@@ -252,9 +250,7 @@ UINT8 PD_Detect( void )
         {
             cmp_cc2 |= bCC_CMP_22;
         }
-        USBPD->PORT_CC2 &= ~( CC_CE|CC_CMPO|CC_CVS_Mask );
-        USBPD->PORT_CC2 |= CC_CE;
-        USBPD->PORT_CC2 |= CC_CVS_66;
+		
 #elif(CC_2==CC3)
         USBPD->PORT_CC3 &= ~( CC_CE|CC_CMPO|CC_CVS_Mask );
         USBPD->PORT_CC3 |= CC_CE;
@@ -264,19 +260,17 @@ UINT8 PD_Detect( void )
         {
             cmp_cc3 |= bCC_CMP_22;
         }
-        USBPD->PORT_CC3 &= ~( CC_CE|CC_CMPO|CC_CVS_Mask );
-        USBPD->PORT_CC3 |= CC_CE;
-        USBPD->PORT_CC3 |= CC_CVS_66;
+
 #endif
 
         if (USBPD->PORT_CC1 & CC_PD)
         {
-            if (cmp_cc1 & bCC_CMP_22 == bCC_CMP_22)
+            if ((cmp_cc1 & bCC_CMP_22) == bCC_CMP_22)
             {
                 ret = 1;
             }
 #if(CC_2==CC2)
-            if (cmp_cc2 & bCC_CMP_22 == bCC_CMP_22)
+            if ((cmp_cc2 & bCC_CMP_22) == bCC_CMP_22)
             {
                 if( ret )
                 {
@@ -288,7 +282,7 @@ UINT8 PD_Detect( void )
                 }
             }
 #elif(CC_2==CC3)
-            if (cmp_cc3 & bCC_CMP_22 == bCC_CMP_22)
+            if ((cmp_cc3 & bCC_CMP_22) == bCC_CMP_22)
             {
                 if( ret )
                 {

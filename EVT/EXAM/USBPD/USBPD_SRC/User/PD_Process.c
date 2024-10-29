@@ -2,7 +2,7 @@
 * File Name          : PD_process.c
 * Author             : WCH
 * Version            : V1.0.0
-* Date               : 2024/06/24
+* Date               : 2024/10/28
 * Description        : This file provides all the PD firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -209,7 +209,7 @@ void PD_Init( void )
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-//    EXTEN->CTLR2 |= USBPD_HVT;
+    EXTEN->CTLR2 |= USBPD_HVT;
 
     USBPD->CONFIG = PD_DMA_EN;
     USBPD->STATUS = BUF_ERR | IF_RX_BIT | IF_RX_BYTE | IF_RX_ACT | IF_RX_RESET | IF_TX_END;
@@ -531,7 +531,6 @@ void PD_Det_Proc( void )
                 {
                     USBPD->CONFIG &=~CC_SEL_Mask;
                     USBPD->CONFIG |= CC_SEL_3;
-                    printf("USBPD->CONFIG=%x\r\n",USBPD->CONFIG);
                 }
 
                 if( (USBPD->PORT_CC1 & CC_PD) || (USBPD->PORT_CC2 & CC_PD)||(USBPD->PORT_CC3 & CC_PD)  )
@@ -779,6 +778,25 @@ void PD_Main_Proc( )
     {
         case STA_DISCONNECT:
             printf("Disconnect\r\n");
+            #if(Lowpower==LowpowerON)
+                        RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+                        EXTI_ClearITPendingBit(EXTI_Line0);
+            #if(CC_2==CC2)
+                        EXTI_ClearITPendingBit(EXTI_Line1);
+
+            #elif(CC_2==CC3)
+                        EXTI_ClearITPendingBit(EXTI_Line9);
+                        NVIC_EnableIRQ(EXTI15_8_IRQn);
+            #endif
+
+                        NVIC_EnableIRQ(EXTI7_0_IRQn);
+                        printf("Fell deep sleep\r\n");
+                        Delay_Ms(100);
+                        __WFI();
+
+            #elif(Lowpower==LowpowerOff)
+
+            #endif
             PD_PHY_Reset( );
             break;
 

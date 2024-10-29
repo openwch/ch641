@@ -2,7 +2,7 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2024/06/05
+ * Date               : 2024/07/22
  * Description        : Main program body.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -33,7 +33,8 @@
 #include "PD_Process.h"
 
 void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
-
+void EXTI7_0_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
+void EXTI15_8_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 volatile UINT8  Tim_Ms_Cnt = 0x00;
 
 /*********************************************************************
@@ -64,6 +65,44 @@ void TIM1_Init( u16 arr, u16 psc )
     TIM_Cmd( TIM1, ENABLE );
 }
 
+
+/*********************************************************************
+ * @fn      EXTI_INIT
+ *
+ * @brief   Initializes EXTI2 collection.
+ *
+ * @return  none
+ */
+void EXTI_INIT(void)
+{
+    EXTI_InitTypeDef EXTI_InitStructure = {0};
+
+    /* GPIOB.0 ----> EXTI_Line0 */
+       GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource0);
+       EXTI_InitStructure.EXTI_Line = EXTI_Line0;
+       EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+       EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+       EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+       EXTI_Init(&EXTI_InitStructure);
+#if(CC_2==CC2)
+       /* GPIOB.1 ----> EXTI_Line1 */
+             GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource1);
+             EXTI_InitStructure.EXTI_Line = EXTI_Line1;
+             EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+             EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+             EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+             EXTI_Init(&EXTI_InitStructure);
+#elif(CC_2==CC3)
+    /* GPIOB.9 ----> EXTI_Line9 */
+         GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource9);
+         EXTI_InitStructure.EXTI_Line = EXTI_Line9;
+         EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+         EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+         EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+         EXTI_Init(&EXTI_InitStructure);
+#endif
+}
+
 /*********************************************************************
  * @fn      main
  *
@@ -83,6 +122,7 @@ int main(void)
     printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
     printf( "PD SCR TEST\r\n" );
     PD_Init( );
+    EXTI_INIT();
     TIM1_Init( 999, 48-1);
     while(1)
     {
@@ -116,4 +156,51 @@ void TIM1_UP_IRQHandler(void)
         Tim_Ms_Cnt++;
         TIM_ClearITPendingBit( TIM1, TIM_IT_Update );
     }
+}
+
+
+/*********************************************************************
+ * @fn      EXTI7_0_IRQHandler
+ *
+ * @brief   This function handles EXTI0 and EXTI1 Handler.
+ *
+ * @return  none
+ */
+void EXTI7_0_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line0)!=RESET)
+    {
+        printf(" CC1 Wake_up\r\n");
+        EXTI_ClearITPendingBit(EXTI_Line0);     /* Clear Flag */
+        NVIC_DisableIRQ(EXTI7_0_IRQn);
+    }
+#if(CC_2==CC2)
+    if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
+    {
+        printf(" CC2 Wake_up\r\n");
+        EXTI_ClearITPendingBit(EXTI_Line1);     /* Clear Flag */
+        NVIC_DisableIRQ(EXTI7_0_IRQn);
+    }
+#elif(CC_2==CC3)
+#endif
+}
+
+/*********************************************************************
+ * @fn      EXTI15_8_IRQHandler
+ *
+ * @brief   This function handles EXTI9 Handler.
+ *
+ * @return  none
+ */
+void EXTI15_8_IRQHandler(void)
+{
+#if(CC_2==CC2)
+#elif(CC_2==CC3)
+    if(EXTI_GetITStatus(EXTI_Line9)!=RESET)
+    {
+        printf(" CC3 Wake_up\r\n");
+        EXTI_ClearITPendingBit(EXTI_Line9);     /* Clear Flag */
+        NVIC_DisableIRQ(EXTI15_8_IRQn);
+    }
+#endif
 }
