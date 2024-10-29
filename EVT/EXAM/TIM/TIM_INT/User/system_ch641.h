@@ -1,20 +1,32 @@
 /********************************** (C) COPYRIGHT *******************************
-* File Name          : ch641_it.h
+* File Name          : system_ch641.h
 * Author             : WCH
 * Version            : V1.0.0
 * Date               : 2023/08/28
-* Description        : This file contains the headers of the interrupt handlers.
+* Description        : CH641 Device Peripheral Access Layer System Header File.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
 * Attention: This software (modified or not) and binary are used for 
 * microcontroller manufactured by Nanjing Qinheng Microelectronics.
 *******************************************************************************/
-#ifndef __CH641_IT_H
-#define __CH641_IT_H
+#ifndef __SYSTEM_CH641_H
+#define __SYSTEM_CH641_H
 
-#include "ch641_debug.h"
+#ifdef __cplusplus
+ extern "C" {
+#endif 
 
+extern uint32_t SystemCoreClock;          /* System Clock Frequency (Core Clock) */
+
+/* System_Exported_Functions */  
+extern void SystemInit(void);
+extern void SystemCoreClockUpdate(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
+
 
 

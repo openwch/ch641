@@ -34,6 +34,22 @@ SECTIONS
      
     } >BFLASH AT>BFLASH
 
+    .highcodelalign : 
+    {       
+        . = ALIGN(4);
+        PROVIDE(_highcode_lma = .); 
+    } >FLASH AT>FLASH 
+    
+    .highcode : 
+    {
+        . = ALIGN(4);
+        PROVIDE(_highcode_vma_start = .);
+        *(.highcode);
+        *(.highcode.*);
+		. = ALIGN(4); 
+        PROVIDE(_highcode_vma_end = .);
+    } >RAM AT>FLASH
+
     .text :
     {
       . = ALIGN(4);

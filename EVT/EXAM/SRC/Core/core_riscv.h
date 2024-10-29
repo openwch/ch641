@@ -274,19 +274,6 @@ __attribute__( ( always_inline ) ) RV_STATIC_INLINE void NVIC_SetPriority(IRQn_T
 }
 
 /*********************************************************************
- * @fn      __WFI
- *
- * @brief   Wait for Interrupt
- *
- * @return  none
- */
-__attribute__( ( always_inline ) ) RV_STATIC_INLINE void __WFI(void)
-{
-  NVIC->SCTLR &= ~(1<<3);   // wfi
-  asm volatile ("wfi");
-}
-
-/*********************************************************************
  * @fn      _SEV
  *
  * @brief   Set Event
@@ -303,17 +290,23 @@ __attribute__( ( always_inline ) ) RV_STATIC_INLINE void _SEV(void)
 }
 
 /*********************************************************************
- * @fn      _WFE
+ * @fn      WFItoWFE
  *
- * @brief   Wait for Events
+ * @brief   WFI to WFE
  *
  * @return  none
  */
-__attribute__( ( always_inline ) ) RV_STATIC_INLINE void _WFE(void)
+__attribute__( ( always_inline ) ) RV_STATIC_INLINE void WFItoWFE(void)
 {
   NVIC->SCTLR |= (1<<3);
-  asm volatile ("wfi");
 }
+
+__attribute__( (section(".highcode")) ) void WFE(u32 t);
+
+#define _WFE()   WFE(19) //48M
+//#define _WFE()   WFE(11) //24M
+//#define _WFE()   WFE(8) //16M
+//#define _WFE()   WFE(5) //8M
 
 /*********************************************************************
  * @fn      __WFE
@@ -324,9 +317,26 @@ __attribute__( ( always_inline ) ) RV_STATIC_INLINE void _WFE(void)
  */
 __attribute__( ( always_inline ) ) RV_STATIC_INLINE void __WFE(void)
 {
-  _SEV();
-  _WFE();
-  _WFE();
+    NVIC->SCTLR |= (1<<4);
+    __disable_irq();
+    _SEV();
+    WFItoWFE();
+    _WFE();
+    WFItoWFE();
+    _WFE();
+    __enable_irq();
+}
+
+/*********************************************************************
+ * @fn      __WFI
+ *
+ * @brief   Wait for Interrupt
+ *
+ * @return  none
+ */
+__attribute__( ( always_inline ) ) RV_STATIC_INLINE void __WFI(void)
+{
+  __WFE();
 }
 
 /*********************************************************************

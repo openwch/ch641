@@ -12,7 +12,7 @@
 #ifndef __CH641_IT_H
 #define __CH641_IT_H
 
-#include "ch641_debug.h"
+#include "debug.h"
 
 
 #endif
