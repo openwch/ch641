@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : PD_process.c
 * Author             : WCH
-* Version            : V1.0.0
-* Date               : 2024/10/28
+* Version            : V1.0.1
+* Date               : 2024/12/20
 * Description        : This file provides all the PD firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -76,7 +76,7 @@ void USBPD_IRQHandler(void)
                 if( ( USBPD->BMC_BYTE_CNT != 6 ) || ( ( PD_Rx_Buf[ 0 ] & 0x1F ) != DEF_TYPE_GOODCRC ) )
                 {
                     Delay_Us(30);                       /* Delay 30us, answer GoodCRC */
-                    PD_Ack_Buf[ 0 ] = 0x41;
+                    PD_Ack_Buf[ 0 ] = 0x61;
                     PD_Ack_Buf[ 1 ] = ( PD_Rx_Buf[ 1 ] & 0x0E ) | PD_Ctl.Flag.Bit.Auto_Ack_PRRole;
                     USBPD->CONFIG |= IE_TX_END;
                     PD_Phy_SendPack( 0, PD_Ack_Buf, 2, UPD_SOP0 );
