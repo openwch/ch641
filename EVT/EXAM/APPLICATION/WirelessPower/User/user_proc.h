@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : user_proc.h
 * Author             : WCH
-* Version            : V1.0.0
-* Date               : 2023/10/23
+* Version            : V1.0.1
+* Date               : 2026/10/08
 * Description        : User profile
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -123,7 +123,7 @@ extern void Get_Cur_Batpercent( void );                                         
 extern void App_Cfg_Init( void );                                               /* Initialization of the configuration of common user parameters */
 extern void Blind_Callback( void );                                             /* For printing only */
 extern uint16_t Get_Pingrmv_ISEN( void );                                       /* Setting the blocking current during PING */
-extern void User_Loop_Proc( void );                                             /* Program segments executed in the main program cycle */                                           /* 主程序周期执行的程序段 */
+extern void User_Loop_Proc( void );                                             /* Program segments executed in the main program cycle */                                           
 
 extern void Remove_Device( void );                                              /* Device Removal */
 

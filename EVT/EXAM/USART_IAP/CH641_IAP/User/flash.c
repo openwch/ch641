@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
-* File Name          : iap.c
+* File Name          : flash.c
 * Author             : WCH
-* Version            : V1.0.1
-* Date               : 2025/01/09
+* Version            : V1.0.2
+* Date               : 2026/10/16
 * Description        : Flash program
 *******************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -10,8 +10,6 @@
 * microcontroller manufactured by Nanjing Qinheng Microelectronics.
 *******************************************************************************/
 #include "flash.h"
-
-u32 Verify_buf[32];
 
 /*********************************************************************
  * @fn      CH32_IAP_Program

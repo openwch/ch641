@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : PD_process.c
 * Author             : WCH
-* Version            : V1.0.1
-* Date               : 2024/12/20
+* Version            : V1.0.3
+* Date               : 2026/10/14
 * Description        : This file provides all the PD firmware functions.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -22,14 +22,12 @@ __attribute__ ((aligned(4))) uint8_t PD_Tx_Buf[ 34 ];                           
 /******************************************************************************/
 UINT8 PD_Ack_Buf[ 2 ];                                                          /* PD-ACK buffer */
 
-UINT8  Tmr_Ms_Cnt_Last;                                                         /* System timer millisecond timing final value */
-UINT8  Tmr_Ms_Dlt;                                                              /* System timer millisecond timing this interval value */
+__IO UINT8  Tmr_Ms_Cnt_Last;                                                         /* System timer millisecond timing final value */
+__IO UINT8  Tmr_Ms_Dlt;                                                              /* System timer millisecond timing this interval value */
+PD_CONTROL PD_Ctl={0};                                                              /* PD Control Related Structures */
+UINT8  Adapter_SrcCap[ 30 ];                                                    /* Contents of the SrcCap message for the adapter */
 
-PD_CONTROL PD_Ctl;                                                              /* PD Control Related Structures */
-
-UINT8  Adapter_SrcCap[ 30 ];                                                    /* SrcCap message from the adapter */
-
-UINT8  PDO_Len;
+__IO UINT8  PDO_Len;
 
 /* SrcCap Table */
 UINT8 SrcCap_5V3A_Tab[ 4 ]  = { 0X2C, 0X91, 0X01, 0X3E };
@@ -401,10 +399,10 @@ UINT8 PD_Detect( void )
         }
         else
         {
-            if ((((cmp_cc1 & bCC_CMP_66) == bCC_CMP_66) & ((cmp_cc1 & bCC_CMP_220) == 0x00)) == 1)
+            if ((((cmp_cc1 & bCC_CMP_66) == bCC_CMP_66) && ((cmp_cc1 & bCC_CMP_220) == 0x00)) == 1)
             {
 #if(CC_2==CC2)
-                if ((((cmp_cc2 & bCC_CMP_22) == bCC_CMP_22) & ((cmp_cc2 & bCC_CMP_66) == 0x00)) == 1)
+                if ((((cmp_cc2 & bCC_CMP_22) == bCC_CMP_22) && ((cmp_cc2 & bCC_CMP_66) == 0x00)) == 1)
                 {
                     ret = 1;
                 }
@@ -413,7 +411,7 @@ UINT8 PD_Detect( void )
                     ret = 1;
                 }
 #elif(CC_2==CC3)
-                if ((((cmp_cc3 & bCC_CMP_22) == bCC_CMP_22) & ((cmp_cc3 & bCC_CMP_66) == 0x00)) == 1)
+                if ((((cmp_cc3 & bCC_CMP_22) == bCC_CMP_22) && ((cmp_cc3 & bCC_CMP_66) == 0x00)) == 1)
                 {
                     ret = 1;
                 }
@@ -424,7 +422,7 @@ UINT8 PD_Detect( void )
 #endif
             }
 #if(CC_2==CC2)
-            if ((((cmp_cc2 & bCC_CMP_66) == bCC_CMP_66) & ((cmp_cc2 & bCC_CMP_220) == 0x00)) == 1)
+            if ((((cmp_cc2 & bCC_CMP_66) == bCC_CMP_66) && ((cmp_cc2 & bCC_CMP_220) == 0x00)) == 1)
             {
                 if(ret)
                 {
@@ -443,7 +441,7 @@ UINT8 PD_Detect( void )
                 }
             }
 #elif(CC_2==CC3)
-            if ((((cmp_cc3 & bCC_CMP_66) == bCC_CMP_66) & ((cmp_cc3 & bCC_CMP_220) == 0x00)) == 1)
+            if ((((cmp_cc3 & bCC_CMP_66) == bCC_CMP_66) && ((cmp_cc3 & bCC_CMP_220) == 0x00)) == 1)
             {
                 if(ret)
                 {

@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2023/12/26
+ * Version            : V1.0.2
+ * Date               : 2026/10/16
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -14,6 +14,8 @@
  *@Note
  *FLASH erase/read/write, and fast programming:
  *Includes Standard Erase and Program, Fast Erase and Program.
+ *It is recommended to use the erase function - FLASH_ROM_ERASE.
+ *It is recommended to use the program function - FLASH_ROM_WRITE. 
  *
 */
 
@@ -83,10 +85,10 @@ void Flash_Test(void)
             FLASHStatus = FLASH_ErasePage(PAGE_WRITE_START_ADDR + (FLASH_PAGE_SIZE * EraseCounter));
             if(FLASHStatus != FLASH_COMPLETE)
             {
-                printf("FLASH Erase ERR at Page%d\r\n", EraseCounter + 60);
+                printf("FLASH Erase ERR at Page%d\r\n", PAGE_WRITE_START_ADDR + (FLASH_PAGE_SIZE * EraseCounter));
                 return;
             }
-            printf("FLASH Erase Page%d...\r\n", EraseCounter + 60);
+            printf("FLASH Erase Page Suc...\r\n");
         }
 
         Address = PAGE_WRITE_START_ADDR;
@@ -225,12 +227,16 @@ int main(void)
     Delay_Init();
     Delay_Ms(1000);
     USART_Printf_Init(115200);
-    printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf("SystemClk:%u\r\n", SystemCoreClock);
     printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
+
+    __disable_irq();
     Flash_Test();
     Flash_Test_Fast();
+    __enable_irq();
 
-    while(1);
+    while(1)
+    {
+    }
 }
-
 

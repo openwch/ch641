@@ -1,9 +1,9 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : startup_ch641.s
 * Author             : WCH
-* Version            : V1.0.1
-* Date               : 2024/10/25
-* Description        : vector table for eclipse toolchain.
+* Version            : V1.0.2
+* Date               : 2024/12/15
+* Description        : CH641 StartUp File.
 *                       (BOOT flash as user flash)
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.

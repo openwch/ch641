@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2024/02/26
+ * Version            : V1.0.2
+ * Date               : 2026/10/15
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -65,10 +65,10 @@ void TIM1_UP_IRQHandler()
  */
 void TIM1_Encoder_Init()
 {
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-    TIM_ICInitTypeDef TIM_ICInitStructure;
-    GPIO_InitTypeDef GPIO_InitStructure;
-    NVIC_InitTypeDef NVIC_InitStructure;
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure={0};
+    TIM_ICInitTypeDef TIM_ICInitStructure={0};
+    GPIO_InitTypeDef GPIO_InitStructure={0};
+    NVIC_InitTypeDef NVIC_InitStructure={0};
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
@@ -187,8 +187,7 @@ int main(void)
         {
             printf("Encoder position= %d circle %d step\r\n", circle, TIM2->CNT);
             if (time != 0)
-//                printf("Encoder speed= %f\r\n", -(float)(precircle * 80 + precnt - (circle * 80 + TIM2->CNT)) / (float)time * 1000.0/(float)SpeedSampleTimeMs / 80.0);
-                printf("Encoder speed null!!\r\n");
+                printf("Encoder speed= %f\r\n", -(float)(precircle * 80 + precnt - (circle * 80 + TIM2->CNT)) / (float)time * 1000.0/(float)SpeedSampleTimeMs / 80.0);
             else
                 printf("Encoder speed null!!\r\n");
             time = 0;
