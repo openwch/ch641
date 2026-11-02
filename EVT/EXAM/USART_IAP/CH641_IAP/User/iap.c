@@ -54,9 +54,9 @@ void USART1_CFG(void)
  */
 u8 RecData_Deal(void)
 {
-    u8 i, s, Lenth;
+    u8 i, s, Length;
 
-    Lenth = isp_cmd_t->UART.Len;
+    Length = isp_cmd_t->UART.Len;
 
     switch ( isp_cmd_t->UART.Cmd){
         case CMD_IAP_ERASE:
@@ -66,10 +66,10 @@ u8 RecData_Deal(void)
             break;
 
         case CMD_IAP_PROM:
-            for(i = 0; i < Lenth; i++){
+            for(i = 0; i < Length; i++){
                 Fast_Program_Buf[CodeLen + i] = isp_cmd_t->UART.data[i];
             }
-            CodeLen += Lenth;
+            CodeLen += Length;
             if(CodeLen >= 64){
                 CH32_IAP_Program(Program_addr, (u32*) Fast_Program_Buf);
                 CodeLen -= 64;
@@ -95,14 +95,14 @@ u8 RecData_Deal(void)
             }
 
             s = ERR_SUCCESS;
-            for(i = 0; i < Lenth; i++){
+            for(i = 0; i < Length; i++){
                 if (isp_cmd_t->UART.data[i] != *(u8*) (Verify_addr + i)){
                     s = ERR_ERROR;
                     break;
                 }
             }
 
-            Verify_addr += Lenth;
+            Verify_addr += Length;
 
             break;
 

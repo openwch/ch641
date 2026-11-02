@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2023/12/22
+ * Version            : V1.0.1
+ * Date               : 2026/10/14
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -43,7 +43,6 @@ void EXTI2_INT_INIT(void)
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_30MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     /* GPIOA.2 ----> EXTI_Line2 */
@@ -74,9 +73,8 @@ int main(void)
     SystemCoreClockUpdate();
     Delay_Init();
     Delay_Ms(1000);
-    Delay_Ms(1000);
     USART_Printf_Init(115200);
-    printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf("SystemClk:%u\r\n", SystemCoreClock);
     printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     printf("Sleep Mode Test\r\n");
@@ -97,7 +95,7 @@ int main(void)
 void EXTI7_0_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
 /*********************************************************************
- * @fn      EXTI2_IRQHandler
+ * @fn      EXTI7_0_IRQHandler
  *
  * @brief   This function handles EXTI2 Handler.
  *
@@ -107,7 +105,6 @@ void EXTI7_0_IRQHandler(void)
 {
     if(EXTI_GetITStatus(EXTI_Line2)!=RESET)
     {
-        printf("EXTI2 Wake_up\r\n");
         EXTI_ClearITPendingBit(EXTI_Line2);     /* Clear Flag */
     }
 }

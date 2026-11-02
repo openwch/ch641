@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
 * File Name          : PD_Process.h
 * Author             : WCH
-* Version            : V1.0.0
-* Date               : 2024/07/22
+* Version            : V1.0.1
+* Date               : 2026/10/16
 * Description        : This file contains all the functions prototypes for the
 *                      PD library.
 *********************************************************************************
@@ -29,15 +29,11 @@
 #define CC_2  CC3  //select CC
 /******************************************************************************/
 /* Variable extents */
-extern UINT8  Tmr_Ms_Cnt_Last;
-extern UINT8  Tmr_Ms_Dlt;
+extern __IO UINT8  Tmr_Ms_Cnt_Last;
+extern __IO UINT8  Tmr_Ms_Dlt;
 extern volatile UINT8  Tim_Ms_Cnt;
 
-extern UINT8  PDO_Len;
 extern PD_CONTROL PD_Ctl;
-
-extern UINT8 send_data[ ];
-extern UINT8 PD_Ack_Buf[ ];
 
 extern __attribute__ ((aligned(4))) UINT8 PD_Rx_Buf[ 34 ];
 extern __attribute__ ((aligned(4))) UINT8 PD_Tx_Buf[ 34 ];
@@ -56,7 +52,7 @@ extern void PD_Load_Header( UINT8 ex, UINT8 msg_type );
 extern UINT8 PD_Send_Handle( UINT8 *pbuf, UINT8 len );
 extern void PD_Phy_SendPack( UINT8 mode, UINT8 *pbuf, UINT8 len, UINT8 sop );
 extern void PD_Main_Proc( void );
-extern void PD_PDO_Analyse( UINT8 pdo_idx, UINT8 *srccap, UINT16 *current, UINT16 *voltage );
+extern void PD_Request_Analyse( UINT8 pdo_idx, UINT8 *srccap, UINT16 *current );
 
 
 #ifdef __cplusplus

@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.1
- * Date               : 2024/07/18
+ * Version            : V1.0.3
+ * Date               : 2026/10/14
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -12,11 +12,13 @@
 
 /*
  *@Note
- *Low power, standby mode routine:
- *AWU automatically wakes up
- *This example demonstrates that WFI enters standby mode and wakes up automatically.
- *Note: In order to reduce power consumption as much as possible, it is recommended
- *to set the unused GPIO to pull-up mode.
+ * Low power, standby mode routine:
+ * AWU automatically wakes up
+ * This example demonstrates that WFI enters standby mode and wakes up automatically.
+ *@Note
+ * For the small package model of the chip, there are some pins that have not been led out compared to the largest package, 
+ * or some pins that have been packaged but not used. These pins need to be set as pull-down\up inputs to reduce power 
+ * consumption.Please refer to the routine configuration for details. 
  *
  */
 
@@ -25,7 +27,7 @@
 /* Global define */
 volatile u32 num =0;
 volatile u32 AWU_CNT =0;
-u32 FLAG1 =0;
+
 #define  PSC1  4800-1       //TIM1 PSC
 #define  LSIPSC 60000
 #define  NUM1 3
@@ -140,7 +142,7 @@ int main(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     GPIO_Init(GPIOB, &GPIO_InitStructure);
     USART_Printf_Init(115200);
-    printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf("SystemClk:%u\r\n", SystemCoreClock);
     printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
     printf("Standby Mode Test\r\n");
 

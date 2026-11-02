@@ -55,6 +55,8 @@ void SysTick_Handler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
  */
 void SysTick_Handler(void)
 {
+    #if 0
     printf("Systick\r\n");
+    #endif
     SysTick->SR = 0;
 }

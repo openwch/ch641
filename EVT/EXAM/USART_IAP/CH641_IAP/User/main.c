@@ -66,14 +66,18 @@ int main(void)
         if(*(uint32_t*)CalAddr == CheckNum)
         {
             IAP_2_APP();
-            while(1);
+            while(1)
+            {
+            }
         }
     }
 #elif UPGRADE_MODE == UPGRADE_MODE_IO
     if(PA2_Check() == 0)
     {
         IAP_2_APP();
-        while(1);
+        while(1)
+        {
+        }
     }
 #endif
 
@@ -87,7 +91,9 @@ int main(void)
         if (End_Flag)
          {
             IAP_2_APP();
-            while(1);
+            while(1)
+            {
+            }
          }
 #endif
 

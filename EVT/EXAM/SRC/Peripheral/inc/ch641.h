@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT  *******************************
 * File Name          : ch641.h
 * Author             : WCH
-* Version            : V1.0.1
-* Date               : 2025/03/10
+* Version            : V1.0.2
+* Date               : 2026/10/16
 * Description        : ch641 Device Peripheral Access Layer Header File.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -23,7 +23,7 @@ extern "C" {
 
 /* CH641 Standard Peripheral Library version number */
 #define __CH641_STDPERIPH_VERSION_MAIN   (0x01) /* [15:8] main version */
-#define __CH641_STDPERIPH_VERSION_SUB    (0x04) /* [7:0] sub version */
+#define __CH641_STDPERIPH_VERSION_SUB    (0x05) /* [7:0] sub version */
 #define __CH641_STDPERIPH_VERSION        ( (__CH641_STDPERIPH_VERSION_MAIN << 8)\
                                              |(__CH641_STDPERIPH_VERSION_SUB << 0))
 

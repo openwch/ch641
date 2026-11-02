@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.0
- * Date               : 2023/12/22
+ * Version            : V1.0.1
+ * Date               : 2026/10/16
  * Description        : Main program body.
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -62,13 +62,13 @@ void GPIO_Toggle_INIT(void)
  */
 int main(void)
 {
-    vu8 t=0, i;
-
+    vu8 t=0, i=0;
+    SystemCoreClockUpdate();
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     Delay_Init();
     USART_Printf_Init(115200);
-    printf("SystemClk:%d\r\n",SystemCoreClock);
-    printf("SystemClk:%d\r\n", SystemCoreClock);
+
+    printf("SystemClk:%u\r\n", SystemCoreClock);
     printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     GPIO_Toggle_INIT();
@@ -78,7 +78,6 @@ int main(void)
         Delay_Ms(250);
         printf("-%02d\r\n", t++);
         GPIO_WriteBit(GPIOA, GPIO_Pin_0, (i == 0) ? (i = Bit_SET) : (i = Bit_RESET));
-
     }
 }
 

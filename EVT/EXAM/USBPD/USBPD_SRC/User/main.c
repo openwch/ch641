@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : main.c
  * Author             : WCH
- * Version            : V1.0.1
- * Date               : 2025/01/03
+ * Version            : V1.0.2
+ * Date               : 2026/10/16
  * Description        : Main program body.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
@@ -35,7 +35,7 @@ void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI7_0_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI15_8_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 volatile UINT8  Tim_Ms_Cnt = 0x00;
-
+u8 falg_Wakeup=0;
 /*********************************************************************
  * @fn      TIM1_Init
  *
@@ -119,7 +119,7 @@ int main(void)
     GPIO_PinRemapConfig(GPIO_Remap_SDI_Disable, ENABLE);
     printf( "SystemClk:%d\r\n", SystemCoreClock );
     printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
-    printf( "PD SCR TEST\r\n" );
+    printf( "PD SRC TEST\r\n" );
     PD_Init( );
     EXTI_INIT();
     TIM1_Init( 999, 48-1);
@@ -138,6 +138,11 @@ int main(void)
             PD_Det_Proc( );
         }
         PD_Main_Proc( );
+        if(falg_Wakeup==1)
+        {
+            printf("WakeUp\r\n");
+            falg_Wakeup=0;
+        }
     }
 }
 
@@ -169,14 +174,14 @@ void EXTI7_0_IRQHandler(void)
 {
     if(EXTI_GetITStatus(EXTI_Line0)!=RESET)
     {
-        printf(" CC1 Wake_up\r\n");
+        falg_Wakeup=1;
         EXTI_ClearITPendingBit(EXTI_Line0);     /* Clear Flag */
         NVIC_DisableIRQ(EXTI7_0_IRQn);
     }
 #if(CC_2==CC2)
     if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
     {
-        printf(" CC2 Wake_up\r\n");
+        falg_Wakeup=1;
         EXTI_ClearITPendingBit(EXTI_Line1);     /* Clear Flag */
         NVIC_DisableIRQ(EXTI7_0_IRQn);
     }
@@ -197,7 +202,7 @@ void EXTI15_8_IRQHandler(void)
 #elif(CC_2==CC3)
     if(EXTI_GetITStatus(EXTI_Line9)!=RESET)
     {
-        printf(" CC3 Wake_up\r\n");
+        falg_Wakeup=1;
         EXTI_ClearITPendingBit(EXTI_Line9);     /* Clear Flag */
         NVIC_DisableIRQ(EXTI15_8_IRQn);
     }
